@@ -70,6 +70,8 @@ class DilatedCausalConv1D(KerasBlock):
         X = self.conv(input_X)
         return X
 
+    # def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
+    # This is inherited from the base class (KerasBlock)
 
 class TemporalBlock(KerasBlock):
     """
@@ -125,6 +127,9 @@ class TemporalBlock(KerasBlock):
         X = input_X / max_values
         return X
 
+    # def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
+    # This is inherited from the base class (KerasBlock)
+
 class TemporalConvNet(KerasBlock):
     """
         Temporal Convolutional Network
@@ -169,3 +174,7 @@ class TemporalConvNet(KerasBlock):
         for layer in self.layers:
             X = layer(X)
         return X
+
+    # def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
+    # This is inherited from the base class (KerasBlock)
+    
