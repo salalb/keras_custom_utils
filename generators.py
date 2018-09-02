@@ -27,6 +27,7 @@ class VariableLengthSeriesGenerator(Sequence):
     def __getitem__(self, idx):
         delete_idx = random.randint(0, self.max_delete)
         batch_x, batch_y = self.generator[idx]
-        batch_x[:,:delete_idx,:] = 0
+        if delete_idx > 0:
+            batch_x[:,:delete_idx,:] = 0
 
         return batch_x, batch_y

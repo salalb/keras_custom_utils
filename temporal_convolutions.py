@@ -1,6 +1,8 @@
 import keras.backend as K
+from keras.models import Model
 from keras.layers import Dense, Activation, Conv1D
 from keras.layers import Lambda, SpatialDropout1D, Add
+from keras.layers import Input, Flatten
 
 from .keras_base_block import KerasBlock
 
@@ -70,8 +72,35 @@ class DilatedCausalConv1D(KerasBlock):
         X = self.conv(input_X)
         return X
 
-    # def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
-    # This is inherited from the base class (KerasBlock)
+    def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
+        """
+            Returns a keras.models.Model instance from this stack of layersself.
+
+            input_shape: shape of the input tensorself.
+            use_dense:   False by default. If True, will add an extra Dense layer at the end,
+                         with output dimension equal to self.output_dim or n_output (default)
+                         if passed.
+            n_output:    output dimension if using an extra Dense layer at the end. If n_output
+                         is False, self.output_dim will be used. If both are defined, n_output
+                         is used.
+            activation:  None (linear) by default. Only used if use_dense=True, is the Activation
+                         of the last Dense layer.
+        """
+        input = Input(shape=input_shape)
+        output = self.__call__(input)
+        if use_dense:
+            output = Flatten()(output)
+            if self.output_dim and not n_output:
+                output = Dense(self.output_dim, activation=activation, trainable=self.trainable)(output)
+            elif not self.output_dim and n_output:
+                output = Dense(n_output, activation=activation, trainable=self.trainable)(output)
+            elif self.output_dim and n_output:
+                warnings.warn("Both self.output_dim and n_output are not None, using the later.")
+                output = Dense(n_output, activation=activation, trainable=self.trainable)(output)
+            elif not self.output_dim and not n_output:
+                raise ValueError("output dimension not initialised nor passed with n_output")
+
+        return Model(inputs=input, outputs=output)
 
 class TemporalBlock(KerasBlock):
     """
@@ -127,8 +156,35 @@ class TemporalBlock(KerasBlock):
         X = input_X / max_values
         return X
 
-    # def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
-    # This is inherited from the base class (KerasBlock)
+    def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
+        """
+            Returns a keras.models.Model instance from this stack of layersself.
+
+            input_shape: shape of the input tensorself.
+            use_dense:   False by default. If True, will add an extra Dense layer at the end,
+                         with output dimension equal to self.output_dim or n_output (default)
+                         if passed.
+            n_output:    output dimension if using an extra Dense layer at the end. If n_output
+                         is False, self.output_dim will be used. If both are defined, n_output
+                         is used.
+            activation:  None (linear) by default. Only used if use_dense=True, is the Activation
+                         of the last Dense layer.
+        """
+        input = Input(shape=input_shape)
+        output = self.__call__(input)
+        if use_dense:
+            output = Flatten()(output)
+            if self.output_dim and not n_output:
+                output = Dense(self.output_dim, activation=activation, trainable=self.trainable)(output)
+            elif not self.output_dim and n_output:
+                output = Dense(n_output, activation=activation, trainable=self.trainable)(output)
+            elif self.output_dim and n_output:
+                warnings.warn("Both self.output_dim and n_output are not None, using the later.")
+                output = Dense(n_output, activation=activation, trainable=self.trainable)(output)
+            elif not self.output_dim and not n_output:
+                raise ValueError("output dimension not initialised nor passed with n_output")
+
+        return Model(inputs=input, outputs=output)
 
 class TemporalConvNet(KerasBlock):
     """
@@ -175,6 +231,33 @@ class TemporalConvNet(KerasBlock):
             X = layer(X)
         return X
 
-    # def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
-    # This is inherited from the base class (KerasBlock)
+    def as_model(self, input_shape, use_dense=True, n_output=None, activation=None, **kargs):
+        """
+            Returns a keras.models.Model instance from this stack of layersself.
+
+            input_shape: shape of the input tensorself.
+            use_dense:   False by default. If True, will add an extra Dense layer at the end,
+                         with output dimension equal to self.output_dim or n_output (default)
+                         if passed.
+            n_output:    output dimension if using an extra Dense layer at the end. If n_output
+                         is False, self.output_dim will be used. If both are defined, n_output
+                         is used.
+            activation:  None (linear) by default. Only used if use_dense=True, is the Activation
+                         of the last Dense layer.
+        """
+        input = Input(shape=input_shape)
+        output = self.__call__(input)
+        if use_dense:
+            output = Flatten()(output)
+            if self.output_dim and not n_output:
+                output = Dense(self.output_dim, activation=activation, trainable=self.trainable)(output)
+            elif not self.output_dim and n_output:
+                output = Dense(n_output, activation=activation, trainable=self.trainable)(output)
+            elif self.output_dim and n_output:
+                warnings.warn("Both self.output_dim and n_output are not None, using the later.")
+                output = Dense(n_output, activation=activation, trainable=self.trainable)(output)
+            elif not self.output_dim and not n_output:
+                raise ValueError("output dimension not initialised nor passed with n_output")
+
+        return Model(inputs=input, outputs=output)
     
